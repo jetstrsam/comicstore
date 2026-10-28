@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 from models.issue import Issue, IssueCreate, IssueUpdate
 from localdata.csv import read_csv, write_csv, get_next_id
 
-router = APIRouter(prefix="/issues", tags=["issues"])
+router = APIRouter(prefix="/issues", tags=["Issues"])
 FILENAME = "issues.csv"
 FIELDNAMES = ["id", "titulo", "editorial", "precio", "stock"]
 

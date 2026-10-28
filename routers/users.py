@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 from models.user import Customer, CustomerCreate, CustomerUpdate
 from localdata.csv import read_csv, write_csv, get_next_id
 
-router = APIRouter(prefix="/customers", tags=["customers"])
+router = APIRouter(prefix="/customers", tags=["Customers"])
 FILENAME = "customers.csv"
 FIELDNAMES = ["id", "nombres", "apellidos", "cc", "telefono", "email", "direccion", "membresia"]
 
