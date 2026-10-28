@@ -16,9 +16,15 @@ def read_csv(filename: str) -> List[Dict[str, Any]]:
     path = get_csv_path(filename)
     if not os.path.exists(path):
         return []
+    
+    if os.path.getsize(path) == 0:
+        return []
+        
     with open(path, mode='r', newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
-        return [row for row in reader]
+        if reader.fieldnames is None:
+            return []
+        return [row for row in reader if row]
 
 def write_csv(filename: str, data: List[Dict[str, Any]], fieldnames: List[str]):
     path = get_csv_path(filename)
@@ -32,5 +38,5 @@ def get_next_id(filename: str) -> int:
     rows = read_csv(filename)
     if not rows:
         return 1
-    ids = [int(row["id"]) for row in rows if "id" in row and row["id"].isdigit()]
+    ids = [int(row["id"]) for row in rows if "id" in row and str(row["id"]).isdigit()]
     return max(ids) + 1 if ids else 1

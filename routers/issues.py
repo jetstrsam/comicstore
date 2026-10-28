@@ -21,42 +21,48 @@ def create_issue(issue: IssueCreate):
     }
     rows.append(new_issue)
     write_csv(FILENAME, rows, FIELDNAMES)
-
+    
     response_issue = new_issue.copy()
     response_issue["esta_activo"] = issue.esta_activo
-
     return response_issue
 
 @router.get("/", response_model=list[Issue])
-def get_all_issues(include_inactive:bool = False):
+def get_all_issues(include_inactive: bool = False):
     rows = read_csv(FILENAME)
-    issues_list=[]
-
+    if not rows:
+        return []  
+        
+    issues_list = []
     for row in rows:
-        is_active = row.get("esta_activo", "True") == "True"
+        activo_str = row.get("esta_activo", "True")
+        is_active = str(activo_str).lower() in ("true", "1", "yes")
+        
         if not include_inactive and not is_active:
             continue
-
-    issues_list.append({
-        "id": int(row["id"]),
-        "titulo": row["titulo"],
-        "editorial": row["editorial"],
-        "precio": float(row["precio"]),
-        "stock": int(row["stock"]),
-        "esta_activo": is_active
-    })    
+            
+        issues_list.append({
+            "id": int(row["id"]) if row.get("id") else 0,
+            "titulo": row.get("titulo", ""),
+            "editorial": row.get("editorial", ""),
+            "precio": float(row["precio"]) if row.get("precio") else 0.0,
+            "stock": int(row["stock"]) if row.get("stock") else 0,
+            "esta_activo": is_active
+        })
+    return issues_list
 
 @router.get("/{issue_id}", response_model=Issue)
 def get_one_issue(issue_id: int):
     rows = read_csv(FILENAME)
     for row in rows:
         if int(row["id"]) == issue_id:
+            activo_str = row.get("esta_activo", "True")
             return {
                 "id": int(row["id"]),
                 "titulo": row["titulo"],
                 "editorial": row["editorial"],
                 "precio": float(row["precio"]),
-                "stock": int(row["stock"])
+                "stock": int(row["stock"]),
+                "esta_activo": str(activo_str).lower() in ("true", "1", "yes")
             }
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Issue not found")
 
@@ -71,37 +77,41 @@ def update_issue(issue_id: int, issue: IssueUpdate):
             found = True
             update_localdata = issue.model_dump(exclude_unset=True)
             for key, value in update_localdata.items():
-                row[key] = value
+                if key == "esta_activo":
+                    row[key] = str(value)
+                else:
+                    row[key] = value
+            
+            activo_str = row.get("esta_activo", "True")
             updated_issue = {
                 "id": issue_id,
                 "titulo": row["titulo"],
                 "editorial": row["editorial"],
                 "precio": float(row["precio"]),
                 "stock": int(row["stock"]),
-                "esta_activo": row.get("esta_activo", "True") == "True"
+                "esta_activo": str(activo_str).lower() in ("true", "1", "yes")
             }
             break
+            
     if not found:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Issue not found")
 
     write_csv(FILENAME, rows, FIELDNAMES)
     return updated_issue
 
-@router.delete("/{issue_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{issue_id}")
 def delete_issue(issue_id: int):
     rows = read_csv(FILENAME)
     found = False
 
     for row in rows:
         if int(row["id"]) == issue_id:
-            row["esta_activo"] = "False"
+            row["esta_activo"] = "False" 
             found = True
             break
-    
+
     if not found:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Issue not found")
 
-
-
     write_csv(FILENAME, rows, FIELDNAMES)
-    return {"message": "The Issue has gone to heck... or not?"}
+    return {"message": "The Issue has been inactivated successfully (historic preserved)"}
