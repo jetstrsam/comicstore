@@ -14,7 +14,7 @@ class CustomerCreate(UserBase):
 class Customer(CustomerCreate):
     id: int
 
-Class CustomerUpdate(BaseModel):
+class CustomerUpdate(BaseModel):
     nombres: str | None = None
     apellidos: str | None = None
     cc: str | None = None
