@@ -5,6 +5,7 @@ class IssueBase(BaseModel):
     editorial: str
     precio: float
     stock: int
+    esta_activo: bool = True
     
 
 class IssueCreate(IssueBase):
@@ -18,3 +19,4 @@ class IssueUpdate(BaseModel):
     editorial: str | None = None
     precio: float | None = None
     stock: int | None = None
+    esta_activo: bool | None = None
