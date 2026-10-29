@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import issues, users
+from routers import issues, users, buys_router
 
 app = FastAPI(
     title="Maverick Comic Collection V0.1",
@@ -9,6 +9,7 @@ app = FastAPI(
 
 app.include_router(users.router)
 app.include_router(issues.router)
+app.include_router(buys_router.router)
 
 @app.get("/")
 def root():

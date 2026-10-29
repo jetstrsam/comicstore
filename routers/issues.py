@@ -114,4 +114,4 @@ def delete_issue(issue_id: int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Issue not found")
 
     write_csv(FILENAME, rows, FIELDNAMES)
-    return {"message": "The Issue has been inactivated successfully (historic preserved)"}
+    return {"message": "The Issue has been sent to heck... or not?"}
