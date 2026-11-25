@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING
 from sqlmodel import Field, Relationship, SQLModel
+from .buys_issue_link import BuysIssueLink
 
-from models.buys_issue_link import BuysIssueLink
-from .buys import Buys
 
 if TYPE_CHECKING:
     from .buys import Buys
