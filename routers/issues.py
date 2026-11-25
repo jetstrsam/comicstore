@@ -15,7 +15,7 @@ def create_issue(issue: IssueCreate, session: SessionDep):
     return new_issue
 
 @router.get("/", response_model=list[Issue])
-def get_all_issues(include_inactive: bool = False):
+def get_all_issues(session: SessionDep, include_inactive: bool = False):
     statement = select(Issue)
     if not include_inactive:
         statement = statement.where(Issue.esta_activo == True)
