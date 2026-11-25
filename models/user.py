@@ -14,7 +14,7 @@ class UserBase(SQLModel):
     membresia: str
 
 class Customer(UserBase, table=True):
-    id: int | Nonce = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     buys: list["Buys"] = Relationship(back_populates="customer")
 
 class CustomerCreate(UserBase):
