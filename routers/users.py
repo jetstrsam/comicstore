@@ -54,4 +54,4 @@ def delete_customer(customer_id: int, session: SessionDep):
     session.delete(db_customer)
     session.commit()
 
-    return {"detail": "Customer has been sent to heck"}
+    return {"detail": "Customer has been sent to heck... or not?"}
