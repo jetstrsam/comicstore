@@ -1,6 +1,7 @@
-from pydantic import BaseModel
+from typing import TYPE_CHECKING
+from sqlmodel import Field, Relationship, SQLModel
 
-class UserBase(BaseModel):
+class UserBase(SQLModel):
     nombres: str
     apellidos: str
     cc: str
@@ -14,7 +15,7 @@ class CustomerCreate(UserBase):
 class Customer(CustomerCreate):
     id: int
 
-class CustomerUpdate(BaseModel):
+class CustomerUpdate(UserBase):
     nombres: str | None = None
     apellidos: str | None = None
     cc: str | None = None
